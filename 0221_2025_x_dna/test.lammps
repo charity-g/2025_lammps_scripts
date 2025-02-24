@@ -1,0 +1,34 @@
+# LAMMPS input script for ellipsoidal molecules with bonds
+
+# Initialize simulation
+units lj
+atom_style hybrid molecular ellipsoid  # Combine ellipsoid and bond styles
+boundary p p p
+read_data X_DNA_Formation.dat.lammps
+
+# Pair potential (Gay-Berne for ellipsoids)
+pair_style gayberne 1.0 3.0 1.0 4.0
+pair_coeff * * 1.0 1.0 1.0 0.5 0.2 1.0 1.0 1.0
+
+# Bond potential (harmonic bonds)
+bond_style harmonic
+bond_coeff 1 100.0 1.0  # Harmonic bond with force constant 100 and equilibrium distance 1.0
+
+# Neighbor list settings
+neighbor 0.3 bin
+neigh_modify every 1 delay 0 check yes
+
+# Timestep
+timestep 0.005
+
+# Thermostat (NVT ensemble)
+fix 1 all nvt temp 1.0 1.0 0.1
+
+# Output settings
+thermo 100
+thermo_style custom step temp pe ke etotal press
+dump 1 all atom 1000 dump.lammpstrj
+dump_modify 1 sort id
+
+# Run simulation
+run 10000

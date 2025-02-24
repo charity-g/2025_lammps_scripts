@@ -1,0 +1,88 @@
+# Basic LAMMPS script to model a Y-DNA hydrogel
+
+# Initialize simulation
+units lj          # Use Lennard-Jones units
+dimension 3       # 3D simulation
+boundary p p p    # Periodic boundary conditions
+atom_style full   # Use full atom style (supports bonds, angles, etc.)
+
+# Create simulation box
+region box block -20 20 -20 20 -20 20 units box
+create_box 1 box
+
+# Define coarse-grained DNA strands (Y-shaped)
+# Each Y-DNA unit is represented by 4 beads: 1 central bead and 3 arms
+lattice fcc 1.0
+create_atoms 1 box
+
+# Mass of each bead
+mass 1 1.0
+
+# Pairwise interactions (Lennard-Jones potential)
+pair_style lj/cut 2.5
+pair_coeff 1 1 1.0 1.0 2.5  # epsilon = 1.0, sigma = 1.0, cutoff = 2.5
+
+# Bond and angle definitions should follow atom creation
+# Define bonds and angles for Y-DNA
+bond_style harmonic
+angle_style harmonic
+
+# Create Y-DNA units
+# Each Y-DNA unit has 1 central bead and 3 arm beads
+variable n_y_dna equal 100  # Number of Y-DNA units
+
+# Loop to create Y-DNA units
+variable i loop ${n_y_dna}
+label create_y_dna
+
+# Create central bead
+create_atoms 1 single 0 0 0
+variable central_id equal $((v_i-1)*4+1)
+
+# Create arm beads
+create_atoms 1 single 1 0 0
+create_atoms 1 single -0.5 0.866 0
+create_atoms 1 single -0.5 -0.866 0
+
+# Define bonds between central bead and arm beads
+variable arm1 equal v_central_id+1
+variable arm2 equal v_central_id+2
+variable arm3 equal v_central_id+3
+
+create_bonds single/atom ${central_id} 1 ${arm1}
+create_bonds single/atom ${central_id} 1 ${arm2}
+create_bonds single/atom ${central_id} 1 ${arm3}
+
+# Define angles between arm beads
+create_angles single/atom ${arm1} 1 ${arm2}
+create_angles single/atom ${arm1} 1 ${arm3}
+create_angles single/atom ${arm2} 1 ${arm3}
+
+next i
+jump SELF create_y_dna
+
+# End loop
+label end_create_y_dna
+
+# Bond coefficients (harmonic potential)
+bond_coeff 1 100.0 1.0  # Bond strength = 100, equilibrium distance = 1.0
+
+# Angle coefficients (harmonic potential)
+angle_coeff 1 50.0 120.0  # Angle strength = 50, equilibrium angle = 120 degrees
+
+# Minimize energy
+minimize 1.0e-4 1.0e-6 1000 10000
+
+# Set up dynamics
+fix 1 all nve  # NVE ensemble (constant volume and energy)
+timestep 0.005  # Time step
+
+# Run simulation
+thermo 100      # Print thermodynamics every 100 steps
+run 10000       # Run for 10,000 steps
+
+# Output trajectory
+dump 1 all atom 100 traj.dump
+dump_modify 1 element C  # Label beads as carbon for visualization
+
+# End script

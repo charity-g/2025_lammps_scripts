@@ -1,0 +1,89 @@
+# Basic LAMMPS script to model a Y-DNA using a bead-spring model
+
+# Initialize simulation
+units lj
+dimension 3
+boundary p p p
+atom_style full
+
+# Create simulation box
+region box block -20 20 -20 20 -20 20 units box
+create_box 3 box bond/types 2 angle/types 1 extra/bond/per/atom 2 extra/angle/per/atom 1 extra/special/per/atom 1
+
+# Define masses for each atom type
+mass 1 1.0  # dsDNA bead
+mass 2 1.0  # shared bead
+mass 3 1.0  # ssDNA sticky end
+
+# Define bead-spring model
+bond_style harmonic
+angle_style harmonic
+
+# Bond coefficients (harmonic potential)
+bond_coeff 1 100.0 1.0  # Bond between dsDNA beads
+bond_coeff 2 50.0 1.0   # Bond between ssDNA sticky end and dsDNA bead
+
+# Angle coefficients (harmonic potential)
+angle_coeff 1 50.0 120.0  # Angle between beads in the dsDNA arm
+
+# Pairwise interactions (Lennard-Jones potential)
+pair_style lj/cut 1.5
+pair_coeff * * 1.0 1.0 1.5
+
+# Create Y-DNA units
+# Each Y-DNA unit has 1 shared bead and 3 arms with 2 unique beads each
+variable n_y_dna equal 10  # Number of Y-DNA units
+
+# Loop to create Y-DNA units
+label create_y_dna
+variable i loop ${n_y_dna}
+  variable x equal random(-10,10,${i})
+  variable y equal random(-10,10,${i})
+  variable z equal random(-10,10,${i})
+
+  # Create shared bead (type 2)
+  create_atoms 2 single ${x} ${y} ${z}
+
+  # Create arm beads (type 1)
+  create_atoms 1 single ${x}+1 ${y} ${z}
+  create_atoms 1 single ${x}-0.5 ${y}+0.866 ${z}
+  create_atoms 1 single ${x}-0.5 ${y}-0.866 ${z}
+
+  # Create sticky end beads (type 3)
+  create_atoms 3 single ${x}+1.5 ${y} ${z}
+  create_atoms 3 single ${x}-1 ${y}+1.732 ${z}
+  create_atoms 3 single ${x}-1 ${y}-1.732 ${z}
+
+  # Define bonds between beads
+  variable sid equal atom/${i}
+  bond 1 ${sid} ${sid}+1
+  bond 1 ${sid} ${sid}+2
+  bond 1 ${sid} ${sid}+3
+  bond 2 ${sid}+1 ${sid}+4
+  bond 2 ${sid}+2 ${sid}+5
+  bond 2 ${sid}+3 ${sid}+6
+
+  # Define angles between beads in dsDNA arm
+  angle 1 ${sid}+1 ${sid} ${sid}+2
+  angle 1 ${sid}+2 ${sid} ${sid}+3
+  angle 1 ${sid}+3 ${sid} ${sid}+1
+
+next i
+jump SELF create_y_dna
+
+# Minimize energy
+minimize 1.0e-4 1.0e-6 1000 10000
+
+# Set up dynamics
+fix 1 all nve
+timestep 0.005
+
+# Run simulation
+thermo 100
+run 10000
+
+# Output trajectory
+dump 1 all atom 100 traj.dump
+dump_modify 1 element A B C
+
+# End script

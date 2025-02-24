@@ -1,0 +1,43 @@
+# LAMMPS Input Script for Coarse-Grained Y-DNA Molecule
+
+# Initialize simulation
+units lj
+atom_style molecular
+dimension 3
+boundary p p p
+
+# Read data file
+read_data y-dna.data
+
+# Define coarse-grained DNA interactions
+pair_style hybrid/overlay harmonic fene
+pair_coeff * harmonic 1.0 1.12246  # Harmonic bond potential
+pair_coeff * fene 30.0 1.5 1.0 1.0 # FENE bond potential
+
+# Define angle and dihedral interactions (if applicable)
+angle_style harmonic
+angle_coeff 1 10.0 180.0  # Harmonic angle potential
+
+dihedral_style harmonic
+dihedral_coeff 1 1.0 180.0  # Harmonic dihedral potential
+
+# Neighbor list settings
+neighbor 2.0 bin
+neigh_modify every 1 delay 10 check yes
+
+# Thermostat settings
+thermo 100
+thermo_style custom step temp pe ke etotal press
+thermo_modify flush yes
+
+# Integration settings
+timestep 0.005
+fix 1 all nve
+fix 2 all langevin 1.0 1.0 1.0 12345
+
+# Output settings
+dump 1 all atom 1000 y-dna.lammpstrj
+dump_modify 1 element C
+
+# Run simulation
+run 100000

@@ -1,0 +1,292 @@
+LAMMPS (29 Aug 2024 - Update 1)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (src/comm.cpp:98)
+  using 1 OpenMP thread(s) per MPI task
+Loaded 1 plugins from C:\Users\Hello\AppData\Local\LAMMPS 64-bit 29Aug2024\plugins
+# LAMMPS input script for Y-DNA using a bead-spring model with sticky ends
+
+units lj
+atom_style molecular
+
+# Create a box and initialize water
+lattice fcc 0.7
+Lattice spacing in x,y,z = 1.7878071 1.7878071 1.7878071
+region box block -100 100 -100 100 -100 100
+create_box 3 box bond/types 1 angle/types 1
+Created orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  1 by 1 by 1 MPI processor grid
+# extra/bond/per/atom 3 extra/angle/per/atom 3 extra/special/per/atom 3
+
+mass 1 1.0        # Mass of each bead
+mass 2 0.5        # Mass of each bead
+mass 3 0.5        # Mass of each bead
+
+# Bead Types: 1 for unique arm beads, 2 for shared beads, 3 for water molecules
+
+# Create DNA chains (3 arms with 3 beads per arm)
+# Create arms in the x, y, and z direction with shared beads at the origin
+# Arm 1 (beads 1, 2, 3), Arm 2 (beads 4, 2, 5), Arm 3 (beads 6, 2, 7)
+
+# First arm (1, 2, 3)
+create_atoms 1 single 0 0 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 1 single 1.5 0 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.002 seconds
+create_atoms 1 single 3 0 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 1 single 1.5 0 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 2 single 3 0 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+
+# Second arm (4, 2, 5)
+create_atoms 1 single 0 1.5 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 1 single 1.5 1.5 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 1 single 3 1.5 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 1 single 1.5 1.5 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 2 single 3 1.5 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+
+# Third arm (6, 2, 7)
+create_atoms 1 single 0 3 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 1 single 1.5 3 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 1 single 3 3 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+create_atoms 1 single 1.5 3 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.001 seconds
+create_atoms 2 single 3 3 0
+Created 1 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.000 seconds
+
+# Define bond styles and angles for spring interactions
+bond_style harmonic
+angle_style harmonic
+
+# Define bond and angle coefficients
+bond_coeff 1 100.0 1.0
+angle_coeff 1 50.0 120.0
+
+# Create bonds and angles between beads (you should specify the pairs explicitly in the next steps)
+
+# Water Model (TIP3P)
+create_atoms 3 random 500 12345 box
+Created 500 atoms
+  using lattice units in orthogonal box = (-178.78071 -178.78071 -178.78071) to (178.78071 178.78071 178.78071)
+  create_atoms CPU = 0.001 seconds
+pair_style lj/cut 2.5
+pair_coeff 3 3 1.0 1.0
+# Additional pair interactions (e.g., DNA-water interactions)
+
+# Create patch interactions for sticky ends
+# Specific beads (beads 1, 3, and 5) have patch interactions
+
+# Define pair style for patch interactions (you can customize this interaction model)
+pair_style lj/cut 2.5
+pair_coeff 1 2 1.0 1.0 1.0
+pair_coeff 1 1 1.0 1.5 1.0
+pair_coeff 1 3 1.0 1.0 1.0 # water and bead
+
+pair_coeff 2 2 2.0 1.5 2.5 # Sticky ends interaction (higher attraction)
+pair_coeff 2 3 1.0 1.0 1.0 # Sticky ends interaction (higher attraction)
+
+# Set up group for the system
+group dna type 1 2
+15 atoms in group dna
+group water type 3
+500 atoms in group water
+
+# Define neighbor list parameters
+neighbor 0.3 bin
+neigh_modify delay 10 every 1 check yes
+
+# Initialize simulation settings
+timestep 0.002
+thermo 100
+dump mydmp all atom 1000 dump.lammpstrj
+
+
+# Temperature and pressure settings
+fix 1 dna nve
+fix 2 water nvt temp 1.0 1.0 0.1
+
+# Run simulation
+run 10000
+Generated 0 of 3 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 1 steps, delay = 10 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 2.8
+  ghost atom cutoff = 2.8
+  binsize = 1.4, bins = 256 256 256
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 73.7 | 73.7 | 73.7 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+         0   0              inf            0              inf            nan          
+       100   nan            0              0              nan            nan          
+       200   nan            0              0              nan            nan          
+       300   nan            0              0              nan            nan          
+       400   nan            0              0              nan            nan          
+       500   nan            0              0              nan            nan          
+       600   nan            0              0              nan            nan          
+       700   nan            0              0              nan            nan          
+       800   nan            0              0              nan            nan          
+       900   nan            0              0              nan            nan          
+      1000   nan            0              0              nan            nan          
+      1100   nan            0              0              nan            nan          
+      1200   nan            0              0              nan            nan          
+      1300   nan            0              0              nan            nan          
+      1400   nan            0              0              nan            nan          
+      1500   nan            0              0              nan            nan          
+      1600   nan            0              0              nan            nan          
+      1700   nan            0              0              nan            nan          
+      1800   nan            0              0              nan            nan          
+      1900   nan            0              0              nan            nan          
+      2000   nan            0              0              nan            nan          
+      2100   nan            0              0              nan            nan          
+      2200   nan            0              0              nan            nan          
+      2300   nan            0              0              nan            nan          
+      2400   nan            0              0              nan            nan          
+      2500   nan            0              0              nan            nan          
+      2600   nan            0              0              nan            nan          
+      2700   nan            0              0              nan            nan          
+      2800   nan            0              0              nan            nan          
+      2900   nan            0              0              nan            nan          
+      3000   nan            0              0              nan            nan          
+      3100   nan            0              0              nan            nan          
+      3200   nan            0              0              nan            nan          
+      3300   nan            0              0              nan            nan          
+      3400   nan            0              0              nan            nan          
+      3500   nan            0              0              nan            nan          
+      3600   nan            0              0              nan            nan          
+      3700   nan            0              0              nan            nan          
+      3800   nan            0              0              nan            nan          
+      3900   nan            0              0              nan            nan          
+      4000   nan            0              0              nan            nan          
+      4100   nan            0              0              nan            nan          
+      4200   nan            0              0              nan            nan          
+      4300   nan            0              0              nan            nan          
+      4400   nan            0              0              nan            nan          
+      4500   nan            0              0              nan            nan          
+      4600   nan            0              0              nan            nan          
+      4700   nan            0              0              nan            nan          
+      4800   nan            0              0              nan            nan          
+      4900   nan            0              0              nan            nan          
+      5000   nan            0              0              nan            nan          
+      5100   nan            0              0              nan            nan          
+      5200   nan            0              0              nan            nan          
+      5300   nan            0              0              nan            nan          
+      5400   nan            0              0              nan            nan          
+      5500   nan            0              0              nan            nan          
+      5600   nan            0              0              nan            nan          
+      5700   nan            0              0              nan            nan          
+      5800   nan            0              0              nan            nan          
+      5900   nan            0              0              nan            nan          
+      6000   nan            0              0              nan            nan          
+      6100   nan            0              0              nan            nan          
+      6200   nan            0              0              nan            nan          
+      6300   nan            0              0              nan            nan          
+      6400   nan            0              0              nan            nan          
+      6500   nan            0              0              nan            nan          
+      6600   nan            0              0              nan            nan          
+      6700   nan            0              0              nan            nan          
+      6800   nan            0              0              nan            nan          
+      6900   nan            0              0              nan            nan          
+      7000   nan            0              0              nan            nan          
+      7100   nan            0              0              nan            nan          
+      7200   nan            0              0              nan            nan          
+      7300   nan            0              0              nan            nan          
+      7400   nan            0              0              nan            nan          
+      7500   nan            0              0              nan            nan          
+      7600   nan            0              0              nan            nan          
+      7700   nan            0              0              nan            nan          
+      7800   nan            0              0              nan            nan          
+      7900   nan            0              0              nan            nan          
+      8000   nan            0              0              nan            nan          
+      8100   nan            0              0              nan            nan          
+      8200   nan            0              0              nan            nan          
+      8300   nan            0              0              nan            nan          
+      8400   nan            0              0              nan            nan          
+      8500   nan            0              0              nan            nan          
+      8600   nan            0              0              nan            nan          
+      8700   nan            0              0              nan            nan          
+      8800   nan            0              0              nan            nan          
+      8900   nan            0              0              nan            nan          
+      9000   nan            0              0              nan            nan          
+      9100   nan            0              0              nan            nan          
+      9200   nan            0              0              nan            nan          
+      9300   nan            0              0              nan            nan          
+      9400   nan            0              0              nan            nan          
+      9500   nan            0              0              nan            nan          
+      9600   nan            0              0              nan            nan          
+      9700   nan            0              0              nan            nan          
+      9800   nan            0              0              nan            nan          
+      9900   nan            0              0              nan            nan          
+     10000   nan            0              0              nan            nan          
+Loop time of 0.187021 on 1 procs for 10000 steps with 515 atoms
+
+Performance: 9239604.109 tau/day, 53469.931 timesteps/s, 27.537 Matom-step/s
+8.4% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.013828   | 0.013828   | 0.013828   |   0.0 |  7.39
+Bond    | 0.000925   | 0.000925   | 0.000925   |   0.0 |  0.49
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.004661   | 0.004661   | 0.004661   |   0.0 |  2.49
+Output  | 0.035736   | 0.035736   | 0.035736   |   0.0 | 19.11
+Modify  | 0.11292    | 0.11292    | 0.11292    |   0.0 | 60.38
+Other   |            | 0.01895    |            |       | 10.13
+
+Nlocal:            515 ave         515 max         515 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:             24 ave          24 max          24 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:              8 ave           8 max           8 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 8
+Ave neighs/atom = 0.015533981
+Ave special neighs/atom = 0
+Neighbor list builds = 0
+Dangerous builds = 0
+Total wall time: 0:00:00

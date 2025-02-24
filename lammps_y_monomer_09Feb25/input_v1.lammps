@@ -1,0 +1,74 @@
+# LAMMPS script for modeling a Y-DNA monomer using a coarse-grained model
+
+# Initialize simulation
+units lj
+dimension 3
+boundary p p p
+atom_style molecular
+
+# Create the Y-DNA monomer
+lattice custom 1.0 &
+    a1 1.0 0.0 0.0 &
+    a2 0.0 1.0 0.0 &
+    a3 0.0 0.0 1.0 &
+    basis 0.0 0.0 0.0
+
+region box block -10 10 -10 10 -10 10
+create_box 3 box
+
+# Create the three arms of the Y-DNA
+# Arm 1
+create_atoms 1 single 0.0 0.0 0.0
+create_atoms 1 single 1.0 0.0 0.0
+create_atoms 1 single 2.0 0.0 0.0
+
+# Arm 2
+create_atoms 2 single 0.0 0.0 0.0
+create_atoms 2 single 0.0 1.0 0.0
+create_atoms 2 single 0.0 2.0 0.0
+
+# Arm 3
+create_atoms 3 single 0.0 0.0 0.0
+create_atoms 3 single 0.0 0.0 1.0
+create_atoms 3 single 0.0 0.0 2.0
+
+# Define bonds between beads
+bond_style harmonic
+bond_coeff 1 1.0 1.0  # Harmonic bond for arm 1
+bond_coeff 2 1.0 1.0  # Harmonic bond for arm 2
+bond_coeff 3 1.0 1.0  # Harmonic bond for arm 3
+
+# Create bonds
+create_bonds many 1 1 2 1.0 1.0
+create_bonds many 2 2 3 1.0 1.0
+create_bonds many 3 3 4 1.0 1.0
+
+# Define angles between beads
+angle_style harmonic
+angle_coeff 1 1.0 120.0  # Harmonic angle for arm 1
+angle_coeff 2 1.0 120.0  # Harmonic angle for arm 2
+angle_coeff 3 1.0 120.0  # Harmonic angle for arm 3
+
+# Create angles
+create_angles many 1 1 2 3 1.0 120.0
+create_angles many 2 2 3 4 1.0 120.0
+create_angles many 3 3 4 5 1.0 120.0
+
+# Define pairwise interactions (LJ potential)
+pair_style lj/cut 2.5
+pair_coeff * * 1.0 1.0 2.5
+
+# Set up simulation
+neighbor 0.3 bin
+neigh_modify every 1 delay 0 check yes
+
+# Minimize energy
+minimize 1.0e-4 1.0e-6 1000 10000
+
+# Run simulation
+timestep 0.005
+thermo 100
+run 10000
+
+# Output the final configuration
+write_data y_dna_monomer.data

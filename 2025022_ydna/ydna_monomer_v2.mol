@@ -1,0 +1,52 @@
+# Y-DNA monomer molecule template
+10 atoms
+9 bonds
+6 angles
+
+Coords
+
+1 0.0 0.0 0.0           # Central junction bead
+2 1.0 0.0 0.0           # DNA strand 1 bead 2
+3 2.0 0.0 0.0           # DNA strand 1 bead 3
+4 3.0 0.0 0.0           # DNA strand 1 bead 4
+5 -0.5 0.866 0.0        # DNA strand 2 bead 2
+6 -1.5 1.732 0.0        # DNA strand 2 bead 3
+7 -2.5 2.598 0.0        # DNA strand 2 bead 4
+8 -0.5 -0.866 0.0       # DNA strand 3 bead 2
+9 -1.5 -1.732 0.0       # DNA strand 3 bead 3
+10 -2.5 -2.598 0.0      # DNA strand 3 bead 4
+
+Types
+
+1 1  # Central junction bead
+2 1  # DNA strand 1 bead 1
+3 1  # DNA strand 1 bead 2
+4 2  # DNA strand 1 bead 3
+5 1  # DNA strand 2 bead 4
+6 1  # DNA strand 2 bead 5
+7 2  # DNA strand 2 bead 6
+8 1  # DNA strand 3 bead 7
+9 1  # DNA strand 3 bead 8
+10 2 # DNA strand 3 bead 9
+
+Bonds
+
+1 1 1 2  # Bond between central junction (atom 1) and DNA strand bead 1 (atom 2)
+2 1 2 3  # Bond between DNA strand bead 1 (atom 2) and DNA strand bead 2 (atom 3)
+3 2 3 4  # Bond between DNA strand bead 2 (atom 3) and DNA strand bead 3 (atom 4)
+4 1 1 5  # Bond between central junction (atom 1) and DNA strand bead 4 (atom 5)
+5 1 5 6  # Bond between DNA strand bead 4 (atom 5) and DNA strand bead 5 (atom 6)
+6 2 6 7  # Bond between DNA strand bead 5 (atom 6) and DNA strand bead 6 (atom 7)
+7 1 1 8  # Bond between central junction (atom 1) and DNA strand bead 7 (atom 8)
+8 1 8 9  # Bond between DNA strand bead 7 (atom 8) and DNA strand bead 8 (atom 9)
+9 2 9 10 # Bond between DNA strand bead 8 (atom 9) and DNA strand bead 9 (atom 10)
+
+Angles
+
+1 1 2 1 5   # Angle between DNA strand beads 1 (atom 2), central junction (atom 1), and DNA strand bead 4 (atom 5)
+2 1 5 1 8   # Angle between DNA strand beads 4 (atom 5), central junction (atom 1), and DNA strand bead 7 (atom 8)
+3 1 8 1 2   # Angle between DNA strand beads 7 (atom 8), central junction (atom 1), and DNA strand bead 1 (atom 2)
+4 2 1 2 3   # Angle between DNA strand beads - strand 1 
+5 2 1 5 6   # Angle between DNA strand beads - strand 2
+6 2 1 8 9  # Angle between DNA strand beads - strand 3
+

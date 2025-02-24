@@ -1,0 +1,36 @@
+LAMMPS data file
+
+100 atoms
+99 bonds
+98 angles
+97 dihedrals
+
+Coords
+
+1 1.0 1.0 1.0
+2 1.0 1.0 2.0
+...
+
+Types
+
+1 1
+2 1
+...
+
+Bonds
+
+1 1 1 2
+2 1 2 3
+...
+
+Angles
+
+1 1 1 2 3
+2 1 2 3 4
+...
+
+Dihedrals
+
+1 1 1 2 3 4
+2 1 2 3 4 5
+...

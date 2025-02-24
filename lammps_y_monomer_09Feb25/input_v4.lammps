@@ -1,0 +1,64 @@
+units lj
+dimension 3
+atom_style molecular
+bond_style harmonic
+angle_style harmonic
+pair_style lj/cut 2.5
+boundary p p p
+
+# Cubic box
+region simulation_box block -50 50 -50 50 -50 50
+
+# Define the simulation box with 2 atom types, 1 bond type, and 1 angle type
+create_box 2 simulation_box bond/types 1 angle/types 1 extra/bond/per/atom 3 extra/angle/per/atom 3 extra/special/per/atom 3
+
+# Define molecule template for Y-DNA monomer
+molecule ydna_monomer ydna_monomer_v4.mol
+
+# Create multiple Y-DNA monomers randomly in the simulation box
+create_atoms 0 random 30 678865 simulation_box mol ydna_monomer 8751
+
+# Define atom types
+# Type 1: DNA strand beads
+# Type 2: Central junction bead
+mass 1 1
+mass 2 1
+
+# Pair interactions
+pair_coeff 1 1 1.0 1.0  # DNA strand beads
+pair_coeff 2 2 0.5 0.5  # Central junction bead
+pair_coeff 1 2 0.5 3.0 # Interaction between DNA strand beads and central junction
+
+# Bond coefficients
+# Bond type 1: Intra-strand bonds
+bond_coeff 1 5 2.0  # Intra-strand bonds
+
+# Angle coefficients
+# Angle type 1: Angle between beads in the DNA strands
+angle_coeff 1 5 120.0
+
+# Minimize the system
+minimize 1.0e-4 1.0e-6 1000 10000
+reset_timestep 0
+
+# Define NVE ensemble and Langevin thermostat
+fix mynve all nve
+fix mylgv all langevin 1 1 0.1 94728
+
+# Enforce bonds and angles to remain intact
+fix 1 all shake 0.0001 20 0 b 1 a 1
+
+# Increase neighbor list skin distance
+neigh_modify delay 0 every 1 check yes
+
+# Reduce timestep
+timestep 0.001
+
+# Output thermodynamics and trajectory
+thermo 1000
+dump mydmp all atom 1000 dump.lammpstrj
+
+# Run the simulation gradually
+run 1000
+run 5000
+run 10000

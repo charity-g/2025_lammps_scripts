@@ -1,0 +1,40 @@
+# Y-DNA monomer molecule template
+
+4 atoms
+3 bonds
+3 angles
+
+Coords
+
+1 0.0 0.0 0.0  # Central junction bead
+2 1.0 0.0 0.0  # DNA strand bead 1
+3 -0.5 0.866 0.0  # DNA strand bead 2
+4 -0.5 -0.866 0.0  # DNA strand bead 3
+
+# Types section:
+#    one line per atom
+#    line syntax: ID type
+#    type = atom type of atom (1-Natomtype, or type label)
+Types
+
+1 2  # Central junction bead
+2 1  # DNA strand bead 1
+3 1  # DNA strand bead 2
+4 1  # DNA strand bead 3
+
+# Bonds section:
+#     one line per bond
+#     line syntax: ID type atom1 atom2
+#     type = bond type (1-Nbondtype, or type label)
+#     atom1,atom2 = IDs of atoms in bond
+Bonds
+
+1 1 2 1  # Bond between central junction and DNA strand bead 1
+2 1 3 1  # Bond between central junction and DNA strand bead 2
+3 1 4 1  # Bond between central junction and DNA strand bead 3
+
+Angles
+
+1 1 2 1 3   # Angle between DNA strand beads 1, central junction, and DNA strand bead 2
+2 1 3 1 4   # Angle between DNA strand beads 2, central junction, and DNA strand bead 3
+3 1 4 1 2   # Angle between DNA strand beads 3, central junction, and DNA strand bead 1

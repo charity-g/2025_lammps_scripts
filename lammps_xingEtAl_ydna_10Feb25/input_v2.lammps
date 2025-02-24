@@ -1,0 +1,90 @@
+# LAMMPS input script for Y-DNA using a bead-spring model with sticky ends
+
+units lj
+atom_style molecular
+
+# Create a box and initialize water
+lattice fcc 0.7
+region box block -100 100 -100 100 -100 100
+create_box 3 box bond/types 1 angle/types 1
+# extra/bond/per/atom 3 extra/angle/per/atom 3 extra/special/per/atom 3
+
+mass 1 1.0        # Mass of each bead
+mass 2 0.5        # Mass of each bead
+mass 3 0.5        # Mass of each bead
+
+# Bead Types: 1 for unique arm beads, 2 for shared beads, 3 for water molecules
+
+# Create DNA chains (3 arms with 3 beads per arm)
+# Create arms in the x, y, and z direction with shared beads at the origin
+# Arm 1 (beads 1, 2, 3), Arm 2 (beads 4, 2, 5), Arm 3 (beads 6, 2, 7)
+
+# First arm (1, 2, 3)
+create_atoms 1 single 0 0 0
+create_atoms 1 single 1.5 0 0
+create_atoms 1 single 3 0 0
+create_atoms 1 single 1.5 0 0
+create_atoms 2 single 3 0 0
+
+# Second arm (4, 2, 5)
+create_atoms 1 single 0 1.5 0
+create_atoms 1 single 1.5 1.5 0
+create_atoms 1 single 3 1.5 0
+create_atoms 1 single 1.5 1.5 0
+create_atoms 2 single 3 1.5 0
+
+# Third arm (6, 2, 7)
+create_atoms 1 single 0 3 0
+create_atoms 1 single 1.5 3 0
+create_atoms 1 single 3 3 0
+create_atoms 1 single 1.5 3 0
+create_atoms 2 single 3 3 0
+
+# Define bond styles and angles for spring interactions
+bond_style harmonic
+angle_style harmonic
+
+# Define bond and angle coefficients
+bond_coeff 1 100.0 1.0
+angle_coeff 1 50.0 120.0
+
+# Create bonds and angles between beads (you should specify the pairs explicitly in the next steps)
+
+# Water Model (TIP3P)
+create_atoms 3 random 500 12345 box
+pair_style lj/cut 2.5
+pair_coeff 3 3 1.0 1.0
+# Additional pair interactions (e.g., DNA-water interactions)
+
+# Create patch interactions for sticky ends
+# Specific beads (beads 1, 3, and 5) have patch interactions
+
+# Define pair style for patch interactions (you can customize this interaction model)
+pair_style lj/cut 2.5
+pair_coeff 1 2 1.0 1.0 1.0
+pair_coeff 1 1 1.0 1.5 1.0
+pair_coeff 1 3 1.0 1.0 1.0 # water and bead
+
+pair_coeff 2 2 2.0 1.5 2.5 # Sticky ends interaction (higher attraction)
+pair_coeff 2 3 1.0 1.0 1.0 
+
+# Set up group for the system
+group dna type 1 2
+group water type 3c
+
+# Define neighbor list parameters
+neighbor 0.3 bin
+neigh_modify delay 10 every 1 check yes
+
+# Initialize simulation settings
+timestep 0.002
+thermo 100
+dump mydmp all atom 1000 dump.lammpstrj
+
+
+# Temperature and pressure settings
+fix 1 dna nve
+fix 2 water nvt temp 1.0 1.0 0.1
+
+# Run simulation
+run 10000
