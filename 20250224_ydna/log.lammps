@@ -44,7 +44,7 @@ Read molecule template ydna_monomer:
 create_atoms 0 random 30 678865 box mol ydna_monomer 8751
 Created 300 atoms
   using lattice units in orthogonal box = (0 0 0) to (30 30 30)
-  create_atoms CPU = 0.003 seconds
+  create_atoms CPU = 0.002 seconds
 
 ####################################
 # 2) Define interparticle interactions
@@ -131,41 +131,41 @@ Neighbor list info ...
       bin: standard
 Per MPI rank memory allocation (min/avg/max) = 8.655 | 8.655 | 8.655 Mbytes
    Step          Temp          TotEng         PotEng         KinEng         Press          Volume        Density    
-         0   1              84.165176      82.670176      1.495          0.43570809     27000          0.0081111111 
-        10   1              6.6247881      5.1297881      1.495         -0.24657828     27000          0.0081111111 
-Loop time of 0.002076 on 1 procs for 10 steps with 300 atoms
+         0   1              19.21048       17.71548       1.495         -0.3350505      27000          0.0081111111 
+        10   1              1.5106292      0.015629218    1.495         -0.00099254282  27000          0.0081111111 
+Loop time of 0.002247 on 1 procs for 10 steps with 300 atoms
 
-0.0% CPU use with 1 MPI tasks x 1 OpenMP threads
+695.4% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 Minimization stats:
   Stopping criterion = max iterations
   Energy initial, next-to-last, final = 
-      82.6701755611521   6.20528868759699   5.12978807899073
-  Force two-norm initial, final = 403747.53 629.59568
-  Force max component initial, final = 275091.44 58.275761
-  Final line search alpha, max atom move = 0.00020015611 0.01166425
-  Iterations, force evaluations = 10 13
+      17.7154798967139 0.0175280390953177 0.0156292182920752
+  Force two-norm initial, final = 3385.3662 81.962265
+  Force max component initial, final = 275.79902 39.998348
+  Final line search alpha, max atom move = 0.0035470271 0.14187522
+  Iterations, force evaluations = 10 19
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 9.2e-05    | 9.2e-05    | 9.2e-05    |   0.0 |  4.43
-Bond    | 0.00038    | 0.00038    | 0.00038    |   0.0 | 18.30
-Neigh   | 0.000672   | 0.000672   | 0.000672   |   0.0 | 32.37
-Comm    | 9.6e-05    | 9.6e-05    | 9.6e-05    |   0.0 |  4.62
-Output  | 0.000594   | 0.000594   | 0.000594   |   0.0 | 28.61
+Pair    | 0.000206   | 0.000206   | 0.000206   |   0.0 |  9.17
+Bond    | 0.000559   | 0.000559   | 0.000559   |   0.0 | 24.88
+Neigh   | 0.000771   | 0.000771   | 0.000771   |   0.0 | 34.31
+Comm    | 0.000126   | 0.000126   | 0.000126   |   0.0 |  5.61
+Output  | 0.000276   | 0.000276   | 0.000276   |   0.0 | 12.28
 Modify  | 0          | 0          | 0          |   0.0 |  0.00
-Other   |            | 0.000242   |            |       | 11.66
+Other   |            | 0.000309   |            |       | 13.75
 
 Nlocal:            300 ave         300 max         300 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:            439 ave         439 max         439 min
+Nghost:            444 ave         444 max         444 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:            172 ave         172 max         172 min
+Neighs:            170 ave         170 max         170 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 172
-Ave neighs/atom = 0.57333333
+Total # of neighbors = 170
+Ave neighs/atom = 0.56666667
 Ave special neighs/atom = 5.4
 Neighbor list builds = 4
 Dangerous builds = 0
@@ -174,33 +174,33 @@ run 50
 Generated 0 of 1 mixed pair_coeff terms from geometric mixing rule
 Per MPI rank memory allocation (min/avg/max) = 8.542 | 8.542 | 8.542 Mbytes
    Step          Temp          TotEng         PotEng         KinEng         Press          Volume        Density    
-        10   1              6.6247881      5.1297881      1.495         -0.24657828     27000          0.0081111111 
-        60   1.9968575      6.6222517      3.6369497      2.985302       0.15363494     27000          0.0081111111 
-Loop time of 0.002617 on 1 procs for 50 steps with 300 atoms
+        10   1              1.5106292      0.015629218    1.495         -0.00099254282  27000          0.0081111111 
+        60   0.61373742     1.5244355      0.60689803     0.91753744     0.006517796    27000          0.0081111111 
+Loop time of 0.00232 on 1 procs for 50 steps with 300 atoms
 
-Performance: 8253725.640 tau/day, 19105.846 timesteps/s, 5.732 Matom-step/s
+Performance: 9310344.828 tau/day, 21551.724 timesteps/s, 6.466 Matom-step/s
 0.0% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.000172   | 0.000172   | 0.000172   |   0.0 |  6.57
-Bond    | 0.00086    | 0.00086    | 0.00086    |   0.0 | 32.86
-Neigh   | 0.000601   | 0.000601   | 0.000601   |   0.0 | 22.97
-Comm    | 0.00015    | 0.00015    | 0.00015    |   0.0 |  5.73
-Output  | 0.000295   | 0.000295   | 0.000295   |   0.0 | 11.27
-Modify  | 0.000158   | 0.000158   | 0.000158   |   0.0 |  6.04
-Other   |            | 0.000381   |            |       | 14.56
+Pair    | 0.000168   | 0.000168   | 0.000168   |   0.0 |  7.24
+Bond    | 0.000843   | 0.000843   | 0.000843   |   0.0 | 36.34
+Neigh   | 0.000608   | 0.000608   | 0.000608   |   0.0 | 26.21
+Comm    | 0.000154   | 0.000154   | 0.000154   |   0.0 |  6.64
+Output  | 0.00021    | 0.00021    | 0.00021    |   0.0 |  9.05
+Modify  | 0.000155   | 0.000155   | 0.000155   |   0.0 |  6.68
+Other   |            | 0.000182   |            |       |  7.84
 
 Nlocal:            300 ave         300 max         300 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:            442 ave         442 max         442 min
+Nghost:            432 ave         432 max         432 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:            162 ave         162 max         162 min
+Neighs:            164 ave         164 max         164 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 162
-Ave neighs/atom = 0.54
+Total # of neighbors = 164
+Ave neighs/atom = 0.54666667
 Ave special neighs/atom = 5.4
 Neighbor list builds = 5
 Dangerous builds = 5
