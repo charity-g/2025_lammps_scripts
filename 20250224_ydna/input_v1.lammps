@@ -48,8 +48,8 @@ angle_coeff 2 300.0 180
 pair_style	lj/cut 1.12
 pair_modify	shift yes   # potential energy is shifted so that it smoothly goes to zero at the cutoff distance (5 units in this case).
 # molecule interactions
-pair_coeff 1 1 0.0 0.0  # DNA strand beads
-pair_coeff 1 2 0.75 0.67 # Interaction between DNA strand beads and central junction
+pair_coeff 1 1 -0.75 0.67    # DNA strand beads
+pair_coeff 1 2 -0.75 0.67    # Interaction between DNA strand beads and central junction
 pair_coeff 2 2 4.0 0.2 5.0  # sticky patches with cutoff of 5
 
 ####################################
@@ -86,7 +86,7 @@ fix 1 all nve
 #   - Define simulation length
 ####################################
 
-velocity	all create 1.0 199085 mom no
+# velocity	all create 1.0 199085 mom no
 timestep	0.005
 
 thermo_style	custom step temp etotal pe ke press vol density
@@ -96,6 +96,6 @@ dump mydmp all atom 1000 dump.lammpstrj
 run_style	verlet
 
 # Run energy minimization
-minimize 1.0e-4 1.0e-6 10 1000
+minimize 1.0e-4 1.0e-6 100 10000
 
 run 50

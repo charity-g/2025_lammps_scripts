@@ -1,0 +1,98 @@
+####################################
+# LAMMPS input script for y-monomer#
+####################################
+
+####################################
+# 1) Set up simulation box
+#   - We set a 3D periodic box
+####################################
+
+units       lj
+atom_style  molecular
+dimension   3
+boundary    p p p
+
+region      box block 0 30 0 30 0 30
+create_box  2 box bond/types 2 angle/types 2 extra/bond/per/atom 3 extra/angle/per/atom 3 extra/special/per/atom 8
+
+# Define molecule template for Y-DNA monomer
+molecule ydna_monomer ydna_monomer_v2.mol
+
+####################################
+# 2) placement of Y-DNA molecules
+####################################
+
+# Create multiple Y-DNA monomers randomly in the simulation box
+variable max_attempts equal 100000
+variable seed equal 12239
+variable max_molecules equal 1  # Set desired number of molecules or density
+variable i loop ${max_molecules}
+label loop_start
+
+# Randomly place a Y-DNA molecule
+create_atoms 0 random 1 ${seed} box mol ydna_monomer ${seed}
+
+# Define a compute to calculate pairwise distances
+compute pair_dist all pair/local dist
+
+# Sum the number of overlaps where distance is less than the threshold
+variable overlap_count equal "count(pair_dist < 1.0)"
+
+# Conditional statement to jump to a specific label if overlaps are found
+if "${overlap_count} > 0" then "jump SELF loop_end" else "next i"
+
+jump SELF loop_start
+
+label loop_end
+
+####################################
+# 3) Define interparticle interactions
+####################################
+
+mass        1 1.0
+mass        2 0.1
+
+bond_style  harmonic
+bond_coeff 1 300 0.96     # Intra-strand bonds
+bond_coeff 2 300 0.56     # Intra-strand - with sticky patch
+
+angle_style harmonic
+angle_coeff 1 300.0 120
+angle_coeff 2 300.0 180
+
+pair_style  lj/cut 1.12
+pair_modify shift yes
+pair_coeff 1 1 -0.75 0.67    # DNA strand beads
+pair_coeff 1 2 -0.75 0.67    # Interaction between DNA strand beads and central junction
+pair_coeff 2 2 4.0 0.2 5.0  # sticky patches with cutoff of 5
+
+# read_data y_dna_v2.data add append 
+
+####################################
+# 4) Neighbour lists
+####################################
+
+neighbor        0.3 bin
+neigh_modify    delay 10 every 1
+
+####################################
+# 5) Define simulation parameters
+####################################
+
+fix 1 all nve
+
+####################################
+# 6) Final setup
+####################################
+
+velocity all zero linear
+timestep    0.005
+
+# Run energy minimization
+# minimize 1.0e-4 1.0e-6 100 10000
+
+dump mydmp all atom     10000 dump.lammpstrj
+write_data y_dna_v2.data
+# dump 1     all atom   10000 ydna_coords.atoms
+run 0
+
